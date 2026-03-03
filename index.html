@@ -3,136 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GALAXIA | Search & Bypass</title>
+    <title>MyWay - Galaxia</title>
+    <link rel="icon" type="image/x-icon" href="https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png">
+    
     <style>
         :root {
             --bg: #05070a;
             --accent: #4285f4;
-            --text: #e8eaed;
-            --input-bg: #17191d;
+            --panel: #0d1117;
+            --text: #e6edf3;
         }
 
-        body {
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
             background: var(--bg);
-            background-image: radial-gradient(circle at center, #1a1c24 0%, #05070a 100%);
-            color: var(--text);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
+        }
+
+        /* The Main Entry UI */
+        #portal-ui {
+            position: fixed;
+            inset: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            z-index: 1000;
+            background: radial-gradient(circle at center, #0d1117 0%, #05070a 100%);
+            transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1), opacity 0.4s;
         }
 
-        .container {
+        .ui-container {
             text-align: center;
             width: 90%;
-            max-width: 650px;
-            animation: fadeIn 1s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            max-width: 500px;
         }
 
         h1 {
-            font-size: 4rem;
-            margin: 0 0 30px 0;
-            letter-spacing: 12px;
-            font-weight: 900;
-            background: linear-gradient(to right, #4285f4, #8ab4f8, #c1d5f8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(66, 133, 244, 0.5));
+            font-size: 3.5rem;
+            letter-spacing: 15px;
+            font-weight: 200;
+            color: white;
+            margin: 0 0 10px 0;
+            text-shadow: 0 0 20px rgba(66, 133, 244, 0.3);
         }
 
-        .search-box {
-            position: relative;
-            width: 100%;
+        .version {
+            font-size: 10px;
+            color: #30363d;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
         }
 
         input {
             width: 100%;
-            padding: 18px 30px;
-            border-radius: 50px;
-            border: 1px solid #333;
-            background: var(--input-bg);
-            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            background: #010409;
+            color: var(--accent);
             font-size: 18px;
             outline: none;
+            text-align: center;
+            font-family: 'Consolas', monospace;
             box-sizing: border-box;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: 0.3s;
         }
 
         input:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 25px rgba(66, 133, 244, 0.3), 0 8px 30px rgba(0,0,0,0.5);
-            background: #1e2126;
+            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
         }
 
-        .footer {
-            margin-top: 40px;
+        /* The Browser Window (Iframe) */
+        #browser-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            display: none;
+            z-index: 1;
+        }
+
+        /* Panic/Hidden Class */
+        .hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .status-footer {
+            position: absolute;
+            bottom: 20px;
             font-size: 11px;
-            color: #5f6368;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .status-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #00ff41;
-            border-radius: 50%;
-            margin-right: 5px;
-            box-shadow: 0 0 10px #00ff41;
+            color: #30363d;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>GALAXIA</h1>
-        
-        <div class="search-box">
-            <input type="text" id="mainInput" placeholder="Enter URL or Search Query..." autofocus>
-        </div>
-
-        <div class="footer">
-            <span class="status-dot"></span> Kernel: Galaxia-v4-Bypass
+    <div id="portal-ui">
+        <div class="ui-container">
+            <h1>GALAXIA</h1>
+            <div class="version">V5 ULTIMATE KERNEL</div>
+            <input type="text" id="urlInput" placeholder="URL ENTRY REQUIRED" autofocus autocomplete="off">
+            <div class="status-footer">SECURE CONNECTION | HISTORY-LOCK ACTIVE</div>
         </div>
     </div>
 
+    <iframe id="browser-frame"></iframe>
+
     <script>
-        const PROXY_URL = "https://galaxia.williampitcher347.workers.dev/?url=";
-        const input = document.getElementById('mainInput');
+        const PROXY_BASE = "https://galaxia.williampitcher347.workers.dev/?url=";
+        const input = document.getElementById('urlInput');
+        const ui = document.getElementById('portal-ui');
+        const frame = document.getElementById('browser-frame');
 
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                const query = input.value.trim();
-                if (!query) return;
+                let target = input.value.trim();
+                
+                // Validate it's a link
+                if (target.includes('.') && !target.includes(' ')) {
+                    if (!target.startsWith('http')) target = 'https://' + target;
 
-                // Smart Router Logic
-                const isUrl = query.includes('.') && !query.includes(' ');
-                let finalDestination = "";
+                    const finalUrl = PROXY_BASE + encodeURIComponent(target);
 
-                if (isUrl) {
-                    // Protocol check
-                    let url = query;
-                    if (!url.startsWith('http')) url = 'https://' + url;
+                    // 1. Show the frame
+                    frame.style.display = "block";
                     
-                    // Route through your worker
-                    finalDestination = PROXY_URL + encodeURIComponent(url);
+                    // 2. Load the URL using replace to kill the history trail
+                    frame.contentWindow.location.replace(finalUrl);
+                    
+                    // 3. Slide the UI up
+                    ui.classList.add('hidden');
+                    
+                    // 4. Focus on the frame for gaming
+                    setTimeout(() => { frame.focus(); }, 500);
                 } else {
-                    // Route through Google IGU (Unblocked Search)
-                    finalDestination = `https://www.google.com/search?q=${encodeURIComponent(query)}&igu=1`;
+                    // Flash error if it's just a search word
+                    input.style.borderColor = "#f85149";
+                    input.value = "";
+                    input.placeholder = "DIRECT LINKS ONLY (.com, .net)";
+                    setTimeout(() => { 
+                        input.style.borderColor = "#30363d";
+                        input.placeholder = "URL ENTRY REQUIRED";
+                    }, 2000);
                 }
+            }
+        });
 
-                window.location.href = finalDestination;
+        // THE PANIC KEY & RESET
+        // Press 'Escape' to immediately hide the game and show the portal
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                ui.classList.remove('hidden');
+                frame.style.display = "none";
+                frame.src = "about:blank"; // Kills the audio/video immediately
+                input.focus();
+            }
+        });
+
+        // Listen for messages from the frame (advanced security)
+        window.addEventListener('blur', () => {
+            // This helps keep the focus inside for Roblox controls
+            if (ui.classList.contains('hidden')) {
+                frame.focus();
             }
         });
     </script>
