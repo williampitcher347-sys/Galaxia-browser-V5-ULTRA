@@ -3,180 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyWay - Galaxia</title>
+    <title>My Drive - Google Drive</title>
     <link rel="icon" type="image/x-icon" href="https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png">
     
     <style>
         :root {
-            --bg: #05070a;
+            --bg: #020408;
             --accent: #4285f4;
-            --panel: #0d1117;
-            --text: #e6edf3;
+            --border: #1b1f24;
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
+            margin: 0; padding: 0; height: 100%; width: 100%;
             background: var(--bg);
             font-family: 'Segoe UI', system-ui, sans-serif;
             overflow: hidden;
+            color: white;
         }
 
-        /* The Main Entry UI */
+        /* Entry UI Panel */
         #portal-ui {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            position: fixed; inset: 0;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
             z-index: 1000;
-            background: radial-gradient(circle at center, #0d1117 0%, #05070a 100%);
-            transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1), opacity 0.4s;
+            background: radial-gradient(circle at center, #0d1117 0%, #020408 100%);
+            transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1);
         }
 
-        .ui-container {
-            text-align: center;
-            width: 90%;
-            max-width: 500px;
-        }
+        .container { text-align: center; width: 90%; max-width: 500px; }
 
         h1 {
-            font-size: 3.5rem;
-            letter-spacing: 15px;
-            font-weight: 200;
-            color: white;
-            margin: 0 0 10px 0;
-            text-shadow: 0 0 20px rgba(66, 133, 244, 0.3);
+            font-size: 3.5rem; letter-spacing: 15px; font-weight: 100;
+            margin: 0; text-shadow: 0 0 15px rgba(66, 133, 244, 0.4);
         }
 
-        .version {
-            font-size: 10px;
-            color: #30363d;
-            letter-spacing: 4px;
-            margin-bottom: 40px;
+        .sub-text {
+            font-size: 10px; color: #30363d; letter-spacing: 5px;
+            margin-bottom: 40px; text-transform: uppercase;
         }
 
         input {
-            width: 100%;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #30363d;
-            background: #010409;
-            color: var(--accent);
-            font-size: 18px;
-            outline: none;
-            text-align: center;
-            font-family: 'Consolas', monospace;
-            box-sizing: border-box;
+            width: 100%; padding: 20px; border-radius: 15px;
+            border: 1px solid var(--border); background: #000;
+            color: var(--accent); font-size: 18px; outline: none;
+            text-align: center; font-family: 'Consolas', monospace;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             transition: 0.3s;
         }
 
-        input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.2);
-        }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 20px rgba(66,133,244,0.1); }
 
-        /* The Browser Window (Iframe) */
+        /* The Browser Iframe */
         #browser-frame {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            border: none;
-            display: none;
-            z-index: 1;
+            position: absolute; top: 0; left: 0;
+            width: 100vw; height: 100vh; border: none;
+            display: none; z-index: 1;
         }
 
-        /* Panic/Hidden Class */
-        .hidden {
-            transform: translateY(-100%);
-            opacity: 0;
-            pointer-events: none;
-        }
+        .ui-hidden { transform: translateY(-100%); pointer-events: none; }
 
-        .status-footer {
-            position: absolute;
-            bottom: 20px;
-            font-size: 11px;
-            color: #30363d;
+        /* Loading Spinner */
+        #loader {
+            display: none; margin-top: 20px; border: 3px solid #111;
+            border-top: 3px solid var(--accent); border-radius: 50%;
+            width: 20px; height: 20px; animation: spin 1s linear infinite;
         }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div id="portal-ui">
-        <div class="ui-container">
+        <div class="container">
             <h1>GALAXIA</h1>
-            <div class="version">V5 ULTIMATE KERNEL</div>
-            <input type="text" id="urlInput" placeholder="URL ENTRY REQUIRED" autofocus autocomplete="off">
-            <div class="status-footer">SECURE CONNECTION | HISTORY-LOCK ACTIVE</div>
+            <div class="sub-text">History-Lock Enabled</div>
+            <input type="text" id="urlInput" placeholder="ENTER DIRECT LINK" autofocus autocomplete="off">
+            <center><div id="loader"></div></center>
         </div>
     </div>
 
-    <iframe id="browser-frame"></iframe>
+    <iframe 
+        id="browser-frame" 
+        name="galaxia_window"
+        allow="fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; microphone; camera; midi; pointer-lock" 
+        allowfullscreen>
+    </iframe>
 
     <script>
         const PROXY_BASE = "https://galaxia.williampitcher347.workers.dev/?url=";
         const input = document.getElementById('urlInput');
         const ui = document.getElementById('portal-ui');
         const frame = document.getElementById('browser-frame');
+        const loader = document.getElementById('loader');
+
+        // NEW TAB HIJACKER: Forces sites to stay inside your frame
+        window.open = function(url) {
+            const proxiedUrl = PROXY_BASE + encodeURIComponent(url);
+            frame.contentWindow.location.replace(proxiedUrl);
+            return null; 
+        };
 
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 let target = input.value.trim();
                 
-                // Validate it's a link
                 if (target.includes('.') && !target.includes(' ')) {
                     if (!target.startsWith('http')) target = 'https://' + target;
-
+                    
                     const finalUrl = PROXY_BASE + encodeURIComponent(target);
 
-                    // 1. Show the frame
+                    // Show loader and frame
+                    loader.style.display = "block";
                     frame.style.display = "block";
                     
-                    // 2. Load the URL using replace to kill the history trail
+                    // GHOST REDIRECT: Wipes history trail
                     frame.contentWindow.location.replace(finalUrl);
                     
-                    // 3. Slide the UI up
-                    ui.classList.add('hidden');
-                    
-                    // 4. Focus on the frame for gaming
-                    setTimeout(() => { frame.focus(); }, 500);
+                    // Slide UI out after a short delay
+                    setTimeout(() => {
+                        ui.classList.add('ui-hidden');
+                        loader.style.display = "none";
+                        frame.focus();
+                    }, 800);
                 } else {
-                    // Flash error if it's just a search word
-                    input.style.borderColor = "#f85149";
+                    input.placeholder = "INVALID: USE FULL LINK";
                     input.value = "";
-                    input.placeholder = "DIRECT LINKS ONLY (.com, .net)";
-                    setTimeout(() => { 
-                        input.style.borderColor = "#30363d";
-                        input.placeholder = "URL ENTRY REQUIRED";
-                    }, 2000);
+                    setTimeout(() => { input.placeholder = "ENTER DIRECT LINK"; }, 1500);
                 }
             }
         });
 
-        // THE PANIC KEY & RESET
-        // Press 'Escape' to immediately hide the game and show the portal
+        // THE PANIC KEY (ESC)
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                ui.classList.remove('hidden');
+                ui.classList.remove('ui-hidden');
                 frame.style.display = "none";
-                frame.src = "about:blank"; // Kills the audio/video immediately
+                frame.src = "about:blank"; // Kills audio and session
                 input.focus();
+                input.value = "";
             }
         });
 
-        // Listen for messages from the frame (advanced security)
-        window.addEventListener('blur', () => {
-            // This helps keep the focus inside for Roblox controls
-            if (ui.classList.contains('hidden')) {
+        // Ensure WASD/Mouse stays locked for games
+        frame.onload = () => {
+            if (ui.classList.contains('ui-hidden')) {
                 frame.focus();
             }
-        });
+        };
     </script>
 </body>
 </html>
