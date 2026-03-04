@@ -3,90 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GALAXIA | TITAN ENGINE</title>
-    <style>
+    <link rel="icon" type="image/x-icon" href="https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png">
+    <title>Galaxia - TITAN BROWSER</title> <style>
         :root { --glow: #00ff88; --bg: #050505; }
         
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%;
             background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif;
-            overflow-x: hidden; scroll-behavior: smooth;
+            overflow-x: hidden;
         }
 
         /* ANIMATED MESH BACKGROUND */
         .mesh-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; opacity: 0.3;
-            background: radial-gradient(at 0% 0%, #002211 0px, transparent 50%),
-                        radial-gradient(at 100% 0%, #001122 0px, transparent 50%),
-                        radial-gradient(at 100% 100%, #110022 0px, transparent 50%);
-            filter: blur(80px); animation: drift 20s infinite alternate;
+            z-index: -1; opacity: 0.2;
+            background: radial-gradient(at 0% 0%, #004422 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, #110044 0px, transparent 50%);
+            filter: blur(60px); animation: drift 15s infinite alternate;
         }
 
-        @keyframes drift {
-            from { transform: scale(1); }
-            to { transform: scale(1.2) rotate(5deg); }
-        }
+        @keyframes drift { from { transform: scale(1); } to { transform: scale(1.1); } }
 
         #content-wrapper {
             display: flex; flex-direction: column; align-items: center;
             min-height: 100vh; width: 100%; padding: 40px 20px;
         }
 
-        /* GLASSMORPHISM UI BOX */
+        /* OMEGA GLASS BOX */
         .ui-container {
-            margin-top: 10vh; text-align: center;
-            background: rgba(15, 15, 15, 0.7);
-            backdrop-filter: blur(15px);
-            padding: 60px 40px; border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 100%; max-width: 550px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            animation: fadeIn 1.2s ease-out;
+            margin-top: 12vh; text-align: center;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 50px; border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            width: 100%; max-width: 500px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
         }
 
         h1 { 
-            font-weight: 800; letter-spacing: 12px; margin: 0; font-size: 2.8em; 
-            background: linear-gradient(to right, #fff, var(--glow));
+            font-weight: 900; letter-spacing: 10px; margin: 0; font-size: 2.5em; 
+            background: linear-gradient(to bottom, #fff, #666);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .status-dot {
-            width: 8px; height: 8px; background: var(--glow); border-radius: 50%;
-            display: inline-block; margin-right: 8px; box-shadow: 0 0 10px var(--glow);
-        }
-
         input { 
-            background: rgba(0,0,0,0.5); border: 1px solid #222; padding: 18px; 
-            width: 100%; border-radius: 12px; color: #fff; text-align: center;
-            outline: none; margin: 30px 0 20px 0; transition: 0.3s;
-            font-size: 16px;
+            background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 18px; 
+            width: 100%; border-radius: 15px; color: #fff; text-align: center;
+            outline: none; margin: 30px 0 20px 0; font-size: 16px; transition: 0.3s;
         }
 
-        input:focus { border-color: var(--glow); box-shadow: 0 0 15px rgba(0,255,136,0.2); }
+        input:focus { border-color: var(--glow); box-shadow: 0 0 20px rgba(0,255,136,0.1); }
 
         button { 
-            background: #fff; color: #000; border: none; padding: 15px 60px; 
-            cursor: pointer; text-transform: uppercase; font-size: 12px; font-weight: bold;
-            letter-spacing: 2px; border-radius: 12px; transition: 0.4s;
+            background: #fff; color: #000; border: none; padding: 15px 50px; 
+            cursor: pointer; text-transform: uppercase; font-size: 12px; font-weight: 800;
+            letter-spacing: 2px; border-radius: 15px; transition: 0.3s;
         }
 
-        button:hover { background: var(--glow); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,255,136,0.3); }
+        button:hover { background: var(--glow); transform: scale(1.05); }
 
-        /* AD LAYER - PUSHED DOWN */
+        /* AD LAYER */
         .ad-shelf {
-            margin-top: 100px; width: 100%; max-width: 900px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 20px; padding: 30px; text-align: center;
+            margin-top: 80px; width: 100%; max-width: 800px;
+            padding: 20px; border-top: 1px solid #111;
         }
 
         #proxy-frame { 
             display: none; position: fixed; top: 0; left: 0; 
-            width: 100vw; height: 100vh; border: none; z-index: 99999; 
+            width: 100vw; height: 100vh; border: none; z-index: 100000; 
             background: #fff;
         }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -96,17 +82,14 @@
 
     <div id="content-wrapper">
         <div class="ui-container">
-            <div style="font-size: 10px; letter-spacing: 4px; color: #555; margin-bottom: 10px;">
-                <span class="status-dot"></span>SYSTEM ONLINE // V15.5
-            </div>
             <h1>GALAXIA</h1>
-            <input type="text" id="urlInput" placeholder="Enter target URL (e.g. youtube.com)">
+            <div style="color: #444; font-size: 10px; letter-spacing: 3px; margin-top: 5px;">OMEGA ENGINE V18</div>
+            <input type="text" id="urlInput" placeholder="Secure Proxy Tunnel..." onkeydown="if(event.key==='Enter') launch()">
             <br>
-            <button onclick="launch()">Initiate Titan Bypass</button>
+            <button onclick="launch()">INITIATE TUNNEL</button>
         </div>
 
         <div class="ad-shelf">
-            <div style="font-size: 9px; color: #444; margin-bottom: 20px; letter-spacing: 2px;">SPONSORED NETWORK NODES</div>
             <div id="container-8065ba5f7df2d0f53a2bb888f1df4b3a"></div>
             <script async="async" data-cfasync="false" src="https://pl28845318.effectivegatecpm.com/8065ba5f7df2d0f53a2bb888f1df4b3a/invoke.js"></script>
         </div>
@@ -121,17 +104,16 @@
 
             const workerUrl = "https://galaxia.williampitcher347.workers.dev/?url=" + encodeURIComponent(val);
             
-            document.getElementById('content-wrapper').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('content-wrapper').style.display = 'none';
-                const frame = document.getElementById('proxy-frame');
-                frame.style.display = 'block';
-                frame.src = workerUrl;
-            }, 500);
+            document.getElementById('content-wrapper').style.display = 'none';
+            const frame = document.getElementById('proxy-frame');
+            frame.style.display = 'block';
+            frame.src = workerUrl;
 
-            window.history.pushState(null, null, window.location.href);
+            // Change title back to something unsuspicious after launch
+            document.title = "Google Drive - My Files";
         }
 
+        // Alt + Q Panic Key
         window.addEventListener('keydown', e => {
             if(e.key === 'Q' && e.altKey) window.location.href = "https://hwb.gov.wales/";
         });
