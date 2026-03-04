@@ -2,85 +2,107 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Drive - Google Drive</title>
-    <link rel="icon" type="image/x-icon" href="https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png">
-    <style>
-        :root { --bg: #05070a; --accent: #4285f4; }
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; background: var(--bg); overflow: hidden; font-family: sans-serif; }
-        #portal-ui {
-            position: fixed; inset: 0; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 1000;
-            background: radial-gradient(circle, #0d1117 0%, #05070a 100%);
-            transition: 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Drive - My Files</title> <style>
+        :root {
+            --primary: #6366f1;
+            --bg: #0f172a;
+            --glass: rgba(30, 41, 59, 0.7);
         }
-        .container { text-align: center; width: 90%; max-width: 500px; }
-        h1 { font-size: 3rem; letter-spacing: 12px; color: white; font-weight: 100; margin: 0; }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: white; overflow: hidden;
+        }
+
+        /* The Glass Search Bar */
+        #navbar {
+            position: fixed; top: 20px; left: 50%;
+            transform: translateX(-50%);
+            width: 80%; max-width: 600px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex; gap: 10px; z-index: 1000;
+            transition: 0.3s;
+        }
+
+        #navbar:hover { border-color: var(--primary); }
+
         input {
-            width: 100%; padding: 18px; border-radius: 12px; border: 1px solid #30363d;
-            background: #000; color: var(--accent); font-size: 16px; outline: none;
-            text-align: center; margin-top: 30px; font-family: monospace;
+            flex: 1; background: transparent; border: none;
+            color: white; outline: none; font-size: 16px;
         }
-        #browser-frame { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; border: none; display: none; z-index: 1; }
-        .ui-hidden { transform: translateY(-100%); opacity: 0; }
+
+        button {
+            background: var(--primary); border: none; color: white;
+            padding: 8px 20px; border-radius: 25px; cursor: pointer;
+            font-weight: bold; transition: 0.2s;
+        }
+
+        button:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        /* Full Screen Frame */
+        #frame-container {
+            width: 100vw; height: 100vh;
+            background: #000;
+        }
+
+        iframe {
+            width: 100%; height: 100%; border: none;
+            display: block;
+        }
+
+        /* "Panic" Mode Overlay */
+        #panic-screen {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: white;
+            z-index: 9999;
+        }
     </style>
 </head>
 <body>
-    <div id="portal-ui">
-        <div class="container">
-            <h1>GALAXIA</h1>
-            <input type="text" id="urlInput" placeholder="ENTER LINK" autofocus>
-        </div>
+
+    <div id="panic-screen">
+        <iframe src="https://www.google.com/search?q=educational+resources" style="width:100%; height:100%; border:none;"></iframe>
     </div>
-    <iframe id="browser-frame" name="galaxia_window" sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts allow-same-origin" allow="fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; microphone; pointer-lock" allowfullscreen></iframe>
+
+    <div id="navbar">
+        <input type="text" id="url-input" placeholder="Enter URL (e.g. quackprep.com) or search...">
+        <button onclick="launch()">Launch</button>
+    </div>
+
+    <div id="frame-container">
+        <iframe id="galaxia-engine" src="about:blank" allow="fullscreen; gamepad; autoplay; pointer-lock"></iframe>
+    </div>
 
     <script>
-        const PROXY_BASE = "https://galaxia.williampitcher347.workers.dev/?url=";
-        const input = document.getElementById('urlInput');
-        const ui = document.getElementById('portal-ui');
-        const frame = document.getElementById('browser-frame');
-        let currentHost = "";
+        const proxyBase = "https://galaxia.williampitcher347.workers.dev/?url=";
 
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                let target = input.value.trim();
-                if (target.includes('.')) {
-                    if (!target.startsWith('http')) target = 'https://' + target;
-                    try {
-                        const urlObj = new URL(target);
-                        currentHost = urlObj.origin; // Remembers you are on YouTube
-                    } catch(e) {}
-                    
-                    frame.style.display = "block";
-                    frame.contentWindow.location.replace(PROXY_BASE + encodeURIComponent(target));
-                    ui.classList.add('ui-hidden');
-                }
-            }
+        function launch() {
+            let val = document.getElementById('url-input').value;
+            if (!val) return;
+            if (!val.startsWith('http')) val = 'https://' + val;
+            
+            document.getElementById('galaxia-engine').src = proxyBase + encodeURIComponent(val);
+            document.getElementById('navbar').style.top = "-100px"; // Hide bar after launch
+        }
+
+        // Re-show search bar when mouse hits the top
+        document.addEventListener('mousemove', (e) => {
+            if (e.clientY < 50) document.getElementById('navbar').style.top = "20px";
         });
 
-        // ESCAPE KEY
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                ui.classList.remove('ui-hidden');
-                frame.style.display = "none";
-                frame.src = "about:blank";
-                input.focus();
+        // PANIC KEY: Pressing the Tilde (~) key hides everything
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '`') {
+                document.getElementById('panic-screen').style.display = 'block';
             }
         });
-
-        // The Fix: Auto-wrap redirects and searches
-        setInterval(() => {
-            try {
-                const frameUrl = frame.contentWindow.location.href;
-                if (frameUrl !== "about:blank" && !frameUrl.startsWith(PROXY_BASE)) {
-                    // If the site tries to go to /results, we put the proxy and host back on it
-                    let newUrl = frameUrl;
-                    if (frameUrl.startsWith('https://galaxia-search.github.io/')) { 
-                        newUrl = currentHost + frameUrl.replace('https://galaxia-search.github.io/', '');
-                    }
-                    frame.contentWindow.location.replace(PROXY_BASE + encodeURIComponent(newUrl));
-                }
-            } catch (e) {}
-        }, 400);
     </script>
 </body>
 </html>
