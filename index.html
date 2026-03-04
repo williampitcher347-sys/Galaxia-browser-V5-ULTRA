@@ -2,43 +2,139 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxia V5 Ultra | Network</title>
+    <title>GALAXIA V5 | ULTRA</title>
     <style>
-        body { background: #0a0a0a; color: #00ff41; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .search-box { width: 80%; max-width: 600px; position: relative; }
-        input { width: 100%; padding: 15px; border-radius: 30px; border: 1px solid #00ff41; background: #111; color: white; font-size: 1.1em; outline: none; }
-        button { margin-top: 20px; padding: 12px 35px; border-radius: 25px; background: #00ff41; color: black; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #00cc33; box-shadow: 0 0 15px #00ff41; }
-        .nav { margin-top: 40px; font-size: 0.8em; }
-        a { color: #00ff41; text-decoration: none; opacity: 0.6; }
-        a:hover { opacity: 1; }
+        /* THE CINEMATIC STYLE */
+        body {
+            margin: 0;
+            padding: 0;
+            background: #050505;
+            color: #d1d1d1;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ANIMATED GREY MESH BACKGROUND */
+        canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(20, 20, 20, 0.8);
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            box-shadow: 0 0 50px rgba(0,0,0,1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 3em;
+            letter-spacing: 10px;
+            text-shadow: 0 0 20px #555;
+            margin-bottom: 5px;
+        }
+
+        .status { font-size: 0.7em; color: #555; margin-bottom: 30px; }
+
+        input {
+            background: #111;
+            border: 1px solid #444;
+            padding: 15px 25px;
+            width: 300px;
+            border-radius: 5px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: #888; box-shadow: 0 0 10px #444; }
+
+        button {
+            background: #d1d1d1;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: 0.3s;
+        }
+
+        button:hover { background: #fff; transform: scale(1.05); }
+
     </style>
-    
+
     <script src="https://pl28845318.effectivegatecpm.com/0e/a5/12/0ea512591204a5c6046151d315c010f9.js"></script>
 </head>
 <body>
-    <h1>GALAXIA <small>V5 ULTRA</small></h1>
-    <p>Secure Node: Maesteg-01 | Engine: V15 Universal</p>
 
-    <div class="search-box">
-        <input type="text" id="targetUrl" placeholder="Enter URL to research (e.g. google.com)">
-    </div>
-    <button onclick="launchProxy()">CONNECT</button>
+    <canvas id="mesh"></canvas>
 
-    <div class="nav">
-        <a href="about.html">Project Documentation</a> | Optimized for Archer TX50UH
+    <div class="container">
+        <h1>GALAXIA</h1>
+        <div class="status">V5 ULTRA | NODE: MAESTEG_PRIMARY | ENGINE: V15</div>
+        
+        <input type="text" id="urlInput" placeholder="Enter target URL...">
+        <button onclick="launch()">INITIATE</button>
     </div>
 
     <script>
-        function launchProxy() {
-            let target = document.getElementById('targetUrl').value;
+        // PROXY LAUNCHER
+        function launch() {
+            let target = document.getElementById('urlInput').value;
+            if (!target) return;
             if (!target.startsWith('http')) target = 'https://' + target;
             
-            // LINKING TO YOUR SPECIFIC WORKER
-            const workerUrl = "https://galaxia.williampitcher347.workers.dev";
-            window.location.href = `${workerUrl}?url=${encodeURIComponent(target)}`;
+            const worker = "https://galaxia.williampitcher347.workers.dev";
+            window.location.href = `${worker}?url=${encodeURIComponent(target)}`;
         }
+
+        // ANIMATED BACKGROUND SCRIPT (Grey Nodes)
+        const canvas = document.getElementById('mesh');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = '#444';
+                ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 100; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
     </script>
 </body>
 </html>
