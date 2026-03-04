@@ -2,22 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Drive - Google Drive</title>
     <link rel="icon" type="image/x-icon" href="https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png">
-    
     <style>
         :root { --bg: #05070a; --accent: #4285f4; }
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; background: var(--bg); overflow: hidden; font-family: sans-serif; }
-
-        /* Search UI */
         #portal-ui {
             position: fixed; inset: 0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; z-index: 1000;
             background: radial-gradient(circle, #0d1117 0%, #05070a 100%);
             transition: 0.6s cubic-bezier(0.85, 0, 0.15, 1);
         }
-
         .container { text-align: center; width: 90%; max-width: 500px; }
         h1 { font-size: 3rem; letter-spacing: 12px; color: white; font-weight: 100; margin: 0; }
         input {
@@ -25,86 +20,67 @@
             background: #000; color: var(--accent); font-size: 16px; outline: none;
             text-align: center; margin-top: 30px; font-family: monospace;
         }
-
-        /* The Frame Window */
-        #browser-frame {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            border: none; display: none; z-index: 1;
-        }
-
+        #browser-frame { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; border: none; display: none; z-index: 1; }
         .ui-hidden { transform: translateY(-100%); opacity: 0; }
     </style>
 </head>
 <body>
-
     <div id="portal-ui">
         <div class="container">
             <h1>GALAXIA</h1>
-            <input type="text" id="urlInput" placeholder="ENTER LINK (e.g. youtube.com)" autofocus>
+            <input type="text" id="urlInput" placeholder="ENTER LINK" autofocus>
         </div>
     </div>
-
-    <iframe 
-        id="browser-frame" 
-        name="galaxia_window"
-        sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts allow-same-origin"
-        allow="fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; microphone; pointer-lock" 
-        allowfullscreen>
-    </iframe>
+    <iframe id="browser-frame" name="galaxia_window" sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts allow-same-origin" allow="fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; microphone; pointer-lock" allowfullscreen></iframe>
 
     <script>
         const PROXY_BASE = "https://galaxia.williampitcher347.workers.dev/?url=";
         const input = document.getElementById('urlInput');
         const ui = document.getElementById('portal-ui');
         const frame = document.getElementById('browser-frame');
-
-        // HIJACKER: Prevents popups from opening new tabs
-        window.open = function(url) {
-            const proxiedUrl = PROXY_BASE + encodeURIComponent(url);
-            frame.contentWindow.location.replace(proxiedUrl);
-            return null; 
-        };
+        let currentHost = "";
 
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 let target = input.value.trim();
                 if (target.includes('.')) {
                     if (!target.startsWith('http')) target = 'https://' + target;
+                    try {
+                        const urlObj = new URL(target);
+                        currentHost = urlObj.origin; // Remembers you are on YouTube
+                    } catch(e) {}
                     
-                    const finalUrl = PROXY_BASE + encodeURIComponent(target);
                     frame.style.display = "block";
-                    
-                    // GHOST LOAD: Overwrites history so you can't click 'Back' to find the site
-                    frame.contentWindow.location.replace(finalUrl);
+                    frame.contentWindow.location.replace(PROXY_BASE + encodeURIComponent(target));
                     ui.classList.add('ui-hidden');
                 }
             }
         });
 
-        // PANIC KEY (ESC)
+        // ESCAPE KEY
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 ui.classList.remove('ui-hidden');
                 frame.style.display = "none";
-                frame.src = "about:blank"; // Kills noise/session instantly
+                frame.src = "about:blank";
                 input.focus();
             }
         });
 
-        // RE-TUNNELING ENGINE:
-        // Every 500ms, check if the frame tried to "escape" to a non-proxied URL
+        // The Fix: Auto-wrap redirects and searches
         setInterval(() => {
             try {
-                const currentUrl = frame.contentWindow.location.href;
-                if (currentUrl !== "about:blank" && !currentUrl.startsWith(PROXY_BASE)) {
-                    // Site tried to jump out (likely a Cookie button or Login redirect)
-                    // We grab it and shove it back into the proxy
-                    frame.contentWindow.location.replace(PROXY_BASE + encodeURIComponent(currentUrl));
+                const frameUrl = frame.contentWindow.location.href;
+                if (frameUrl !== "about:blank" && !frameUrl.startsWith(PROXY_BASE)) {
+                    // If the site tries to go to /results, we put the proxy and host back on it
+                    let newUrl = frameUrl;
+                    if (frameUrl.startsWith('https://galaxia-search.github.io/')) { 
+                        newUrl = currentHost + frameUrl.replace('https://galaxia-search.github.io/', '');
+                    }
+                    frame.contentWindow.location.replace(PROXY_BASE + encodeURIComponent(newUrl));
                 }
-            } catch (e) {
-                // Cross-origin blocks actually help us keep the site trapped
-            }
-        }, 500);
+            } catch (e) {}
+        }, 400);
     </script>
 </body>
 </html>
