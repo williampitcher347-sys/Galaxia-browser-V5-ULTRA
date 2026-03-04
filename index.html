@@ -2,34 +2,86 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GALAXIA V5 | ULTRA</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; background: #000; color: #fff; font-family: 'JetBrains Mono', monospace; overflow: hidden; }
-        #main-ui { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; }
-        .box { border: 1px solid #333; padding: 60px; background: #050505; box-shadow: 0 0 50px rgba(0,0,0,1); }
-        h1 { font-weight: 100; letter-spacing: 15px; margin-bottom: 30px; }
-        input { background: #000; border: 1px solid #222; padding: 15px; width: 350px; color: #0f0; text-align: center; outline: none; margin-bottom: 20px; }
-        button { background: #fff; color: #000; border: none; padding: 10px 40px; cursor: pointer; text-transform: uppercase; font-size: 10px; }
-        #proxy-frame { display: none; width: 100%; height: 100%; border: none; position: fixed; top: 0; left: 0; z-index: 1000; }
-        /* Sticky Ad at Bottom */
-        #ad-box { position: fixed; bottom: 0; width: 100%; background: #000; border-top: 1px solid #111; padding: 5px; text-align: center; font-size: 8px; color: #222; }
+        /* RESET & CORE STYLING */
+        * { box-sizing: border-box; }
+        body, html { 
+            margin: 0; padding: 0; 
+            width: 100%; height: 100%; 
+            background: #000; color: #fff; 
+            font-family: 'Inter', sans-serif; 
+            overflow: hidden; /* Prevents double scrollbars */
+        }
+
+        /* CINEMATIC UI */
+        #main-ui { 
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; 
+            height: 100vh; width: 100%;
+            z-index: 10; position: relative;
+        }
+
+        .box { 
+            border: 1px solid #1a1a1a; padding: 60px; 
+            background: rgba(5, 5, 5, 0.95); 
+            box-shadow: 0 0 100px rgba(0,0,0,1);
+            text-align: center;
+        }
+
+        h1 { font-weight: 100; letter-spacing: 20px; margin: 0 0 10px 0; font-size: 3em; }
+        .sub { color: #333; letter-spacing: 5px; font-size: 0.7em; margin-bottom: 40px; }
+
+        input { 
+            background: #000; border: 1px solid #222; padding: 15px; 
+            width: 100%; max-width: 400px; color: #0f0; 
+            text-align: center; outline: none; margin-bottom: 20px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        button { 
+            background: #fff; color: #000; border: none; 
+            padding: 12px 50px; cursor: pointer; 
+            text-transform: uppercase; font-size: 11px; 
+            letter-spacing: 2px; transition: 0.3s;
+        }
+        button:hover { background: #0f0; }
+
+        /* THE SCROLLABLE TITAN FRAME */
+        #proxy-frame { 
+            display: none; 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            border: none; 
+            z-index: 9999; 
+            background: #fff;
+        }
+
+        /* AD ZONE */
+        #ad-footer {
+            position: fixed; bottom: 0; width: 100%;
+            background: #000; border-top: 1px solid #111;
+            padding: 10px; text-align: center; z-index: 5;
+        }
     </style>
 </head>
 <body>
-    <iframe id="proxy-frame"></iframe>
+
+    <iframe id="proxy-frame" name="proxy-frame" scrolling="yes" allowfullscreen="true"></iframe>
 
     <div id="main-ui">
         <div class="box">
             <h1>GALAXIA</h1>
-            <input type="text" id="urlInput" placeholder="URL OR DOMAIN...">
+            <div class="sub">V5 ULTRA // TITAN ENGINE</div>
+            <input type="text" id="urlInput" placeholder="TARGET URL (e.g. discord.com)">
             <br>
-            <button onclick="launch()">INITIATE TITAN ENGINE</button>
+            <button onclick="launch()">INITIATE BYPASS</button>
         </div>
     </div>
 
-    <div id="ad-box">
-        SECURED BY GALAXIA TITAN // AD_BLOCK: OFF
+    <div id="ad-footer">
         <div id="container-8065ba5f7df2d0f53a2bb888f1df4b3a"></div>
         <script async="async" data-cfasync="false" src="https://pl28845318.effectivegatecpm.com/8065ba5f7df2d0f53a2bb888f1df4b3a/invoke.js"></script>
     </div>
@@ -39,19 +91,25 @@
             let val = document.getElementById('urlInput').value.trim();
             if(!val) return;
 
-            // PREVENT SEARCH ENGINE LEAKS
+            // PREVENT SEARCH LEAKS
             if(!val.includes('.')) val += ".com";
             if(!val.startsWith('http')) val = "https://" + val;
 
-            const proxyUrl = "https://galaxia.williampitcher347.workers.dev/?url=" + encodeURIComponent(val);
+            const workerUrl = "https://galaxia.williampitcher347.workers.dev/?url=" + encodeURIComponent(val);
             
+            // EXECUTE STEALTH
             document.getElementById('main-ui').style.display = 'none';
+            document.getElementById('ad-footer').style.display = 'none'; // Hides ads when browsing to maximize space
+            
             const frame = document.getElementById('proxy-frame');
             frame.style.display = 'block';
-            frame.src = proxyUrl;
+            frame.src = workerUrl;
+
+            // HISTORY CLOAK
+            window.history.pushState(null, null, window.location.href);
         }
 
-        // Panic Key (Space + Q)
+        // PANIC KEY: Alt + Q
         window.addEventListener('keydown', e => {
             if(e.key === 'Q' && e.altKey) window.location.href = "https://hwb.gov.wales/";
         });
