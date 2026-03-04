@@ -2,118 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GALAXIA // ARCHITECT-OS</title>
+    <title>Google Drive</title>
     <style>
-        :root {
-            --neon: #00f2ff;
-            --dark: #050505;
-            --grid: rgba(0, 242, 255, 0.05);
-        }
+        body, html { margin: 0; padding: 0; height: 100vh; width: 100vw; background: #050505; font-family: 'Segoe UI', sans-serif; overflow: hidden; color: white; }
 
-        body, html { 
-            margin: 0; padding: 0; height: 100vh; width: 100vw;
-            background-color: var(--dark);
-            color: var(--neon);
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden;
-            background-image: linear-gradient(var(--grid) 1px, transparent 1px), 
-                              linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-            background-size: 30px 30px; /* Blueprint Grid Effect */
-        }
-
-        /* Architect Header */
-        #header {
-            height: 60px; border-bottom: 1px solid var(--neon);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 40px; box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
-        }
-
-        .status-dot { height: 10px; width: 10px; background: var(--neon); border-radius: 50%; display: inline-block; margin-right: 10px; box-shadow: 0 0 10px var(--neon); }
-
-        /* Main Console Layout */
-        #main-ui {
+        /* Cinematic Background */
+        #ui-layer {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: calc(100vh - 60px); text-align: center;
+            height: 100vh; width: 100vw; transition: opacity 0.8s ease;
         }
 
-        .input-structure {
-            border: 2px solid var(--neon);
-            padding: 5px; position: relative;
-            background: rgba(0, 242, 255, 0.02);
+        .hero-text {
+            font-size: 3rem; font-weight: 200; letter-spacing: 15px;
+            margin-bottom: 40px; text-transform: uppercase;
+            animation: fadeIn 3s ease;
         }
 
-        /* Decorative "Corner" Brackets */
-        .input-structure::before, .input-structure::after {
-            content: ''; position: absolute; width: 20px; height: 20px;
-            border: 2px solid var(--neon);
+        @keyframes fadeIn { from { opacity: 0; letter-spacing: 30px; } to { opacity: 1; letter-spacing: 15px; } }
+
+        /* The Search Bar */
+        .search-container {
+            width: 500px; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2);
+            display: flex; align-items: center; transition: 0.5s;
         }
-        .input-structure::before { top: -10px; left: -10px; border-right: 0; border-bottom: 0; }
-        .input-structure::after { bottom: -10px; right: -10px; border-left: 0; border-top: 0; }
+
+        .search-container:focus-within { border-bottom: 1px solid #fff; width: 600px; }
 
         input {
-            background: transparent; border: 1px solid rgba(0, 242, 255, 0.3);
-            color: var(--neon); padding: 15px; width: 500px; font-size: 1.2rem;
-            outline: none; text-transform: uppercase; letter-spacing: 2px;
+            flex: 1; background: none; border: none; color: white;
+            font-size: 1.2rem; outline: none; padding: 10px; font-weight: 200;
         }
 
-        button {
-            margin-top: 30px; background: var(--neon); color: var(--dark);
-            border: none; padding: 15px 40px; font-weight: bold; cursor: pointer;
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); /* Angular Architect Shape */
-            transition: 0.3s;
-        }
-
-        button:hover { letter-spacing: 5px; transform: scale(1.1); }
-
-        /* Full Screen Content Frame */
+        /* The Resulting Site */
         #viewport {
             display: none; width: 100vw; height: 100vh; border: none;
-            position: fixed; top: 0; left: 0; z-index: 100;
+            position: absolute; top: 0; left: 0;
         }
 
-        #return-btn {
-            position: fixed; bottom: 20px; right: 20px; z-index: 200;
-            background: rgba(0,0,0,0.8); border: 1px solid var(--neon); color: var(--neon);
-            padding: 5px 10px; display: none; cursor: pointer;
+        #back-btn {
+            position: fixed; top: 10px; right: 10px; z-index: 100;
+            background: rgba(0,0,0,0.5); color: #888; border: 1px solid #333;
+            padding: 5px 10px; cursor: pointer; display: none; font-size: 10px;
         }
+        #back-btn:hover { color: white; border-color: white; }
     </style>
 </head>
 <body>
 
-<div id="header">
-    <div><span class="status-dot"></span>SYSTEM: GALAXIA_V13</div>
-    <div>NODE: MAESTEG_HUB // REQUESTS: 2K+</div>
-</div>
+    <button id="back-btn" onclick="location.reload()">TERMINATE</button>
 
-<div id="main-ui">
-    <div style="margin-bottom: 50px;">
-        <h2 style="margin:0; font-size: 0.8rem; opacity: 0.6;">PROJECT: DIGITAL_BYPASS</h2>
-        <h1 style="margin:0; font-size: 3rem; letter-spacing: 10px;">MONOLITH</h1>
+    <div id="ui-layer">
+        <div class="hero-text">GALAXIA</div>
+        <div class="search-container">
+            <input type="text" id="url-input" placeholder="ENTER TARGET URL..." autocomplete="off">
+        </div>
+        <p style="margin-top: 20px; color: #444; letter-spacing: 2px; font-size: 10px;">2K SEARCHES AND COUNTING</p>
     </div>
 
-    <div class="input-structure">
-        <input type="text" id="url" placeholder="TARGET_ADDR_INPUT...">
-    </div>
-    
-    <button onclick="deploy()">INITIATE_DEPLOYMENT</button>
-</div>
+    <iframe id="viewport" allow="fullscreen; gamepad; pointer-lock"></iframe>
 
-<iframe id="viewport" allow="fullscreen; gamepad; pointer-lock"></iframe>
-<button id="return-btn" onclick="location.reload()">TERMINATE_SESSION</button>
-
-<script>
-    function deploy() {
-        let val = document.getElementById('url').value;
-        if(!val) return;
-        if(!val.startsWith('http')) val = 'https://' + val;
-
-        const proxy = "https://galaxia.williampitcher347.workers.dev/?url=" + encodeURIComponent(val);
+    <script>
+        const input = document.getElementById('url-input');
         
-        document.getElementById('viewport').src = proxy;
-        document.getElementById('viewport').style.display = 'block';
-        document.getElementById('return-btn').style.display = 'block';
-    }
-</script>
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                launch(input.value);
+            }
+        });
 
+        function launch(val) {
+            if (!val) return;
+            if (!val.startsWith('http')) val = 'https://' + val;
+
+            const proxyUrl = "https://galaxia.williampitcher347.workers.dev/?url=" + encodeURIComponent(val);
+            
+            document.getElementById('ui-layer').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('ui-layer').style.display = 'none';
+                const frame = document.getElementById('viewport');
+                frame.src = proxyUrl;
+                frame.style.display = 'block';
+                document.getElementById('back-btn').style.display = 'block';
+            }, 800);
+        }
+    </script>
 </body>
 </html>
