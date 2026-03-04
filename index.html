@@ -2,88 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Google Drive</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxia V5 Ultra | Network</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100vh; width: 100vw; background: #050505; font-family: 'Segoe UI', sans-serif; overflow: hidden; color: white; }
-
-        /* Cinematic Background */
-        #ui-layer {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; width: 100vw; transition: opacity 0.8s ease;
-        }
-
-        .hero-text {
-            font-size: 3rem; font-weight: 200; letter-spacing: 15px;
-            margin-bottom: 40px; text-transform: uppercase;
-            animation: fadeIn 3s ease;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; letter-spacing: 30px; } to { opacity: 1; letter-spacing: 15px; } }
-
-        /* The Search Bar */
-        .search-container {
-            width: 500px; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2);
-            display: flex; align-items: center; transition: 0.5s;
-        }
-
-        .search-container:focus-within { border-bottom: 1px solid #fff; width: 600px; }
-
-        input {
-            flex: 1; background: none; border: none; color: white;
-            font-size: 1.2rem; outline: none; padding: 10px; font-weight: 200;
-        }
-
-        /* The Resulting Site */
-        #viewport {
-            display: none; width: 100vw; height: 100vh; border: none;
-            position: absolute; top: 0; left: 0;
-        }
-
-        #back-btn {
-            position: fixed; top: 10px; right: 10px; z-index: 100;
-            background: rgba(0,0,0,0.5); color: #888; border: 1px solid #333;
-            padding: 5px 10px; cursor: pointer; display: none; font-size: 10px;
-        }
-        #back-btn:hover { color: white; border-color: white; }
+        body { background: #0a0a0a; color: #00ff41; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .search-box { width: 80%; max-width: 600px; position: relative; }
+        input { width: 100%; padding: 15px; border-radius: 30px; border: 1px solid #00ff41; background: #111; color: white; font-size: 1.1em; outline: none; }
+        button { margin-top: 20px; padding: 12px 35px; border-radius: 25px; background: #00ff41; color: black; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #00cc33; box-shadow: 0 0 15px #00ff41; }
+        .nav { margin-top: 40px; font-size: 0.8em; }
+        a { color: #00ff41; text-decoration: none; opacity: 0.6; }
+        a:hover { opacity: 1; }
     </style>
+    
+    <script src="https://pl28845318.effectivegatecpm.com/0e/a5/12/0ea512591204a5c6046151d315c010f9.js"></script>
 </head>
 <body>
+    <h1>GALAXIA <small>V5 ULTRA</small></h1>
+    <p>Secure Node: Maesteg-01 | Engine: V15 Universal</p>
 
-    <button id="back-btn" onclick="location.reload()">TERMINATE</button>
+    <div class="search-box">
+        <input type="text" id="targetUrl" placeholder="Enter URL to research (e.g. google.com)">
+    </div>
+    <button onclick="launchProxy()">CONNECT</button>
 
-    <div id="ui-layer">
-        <div class="hero-text">GALAXIA</div>
-        <div class="search-container">
-            <input type="text" id="url-input" placeholder="ENTER TARGET URL..." autocomplete="off">
-        </div>
-        <p style="margin-top: 20px; color: #444; letter-spacing: 2px; font-size: 10px;">2K SEARCHES AND COUNTING</p>
+    <div class="nav">
+        <a href="about.html">Project Documentation</a> | Optimized for Archer TX50UH
     </div>
 
-    <iframe id="viewport" allow="fullscreen; gamepad; pointer-lock"></iframe>
-
     <script>
-        const input = document.getElementById('url-input');
-        
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                launch(input.value);
-            }
-        });
-
-        function launch(val) {
-            if (!val) return;
-            if (!val.startsWith('http')) val = 'https://' + val;
-
-            const proxyUrl = "https://galaxia.williampitcher347.workers.dev/?url=" + encodeURIComponent(val);
+        function launchProxy() {
+            let target = document.getElementById('targetUrl').value;
+            if (!target.startsWith('http')) target = 'https://' + target;
             
-            document.getElementById('ui-layer').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('ui-layer').style.display = 'none';
-                const frame = document.getElementById('viewport');
-                frame.src = proxyUrl;
-                frame.style.display = 'block';
-                document.getElementById('back-btn').style.display = 'block';
-            }, 800);
+            // LINKING TO YOUR SPECIFIC WORKER
+            const workerUrl = "https://galaxia.williampitcher347.workers.dev";
+            window.location.href = `${workerUrl}?url=${encodeURIComponent(target)}`;
         }
     </script>
 </body>
