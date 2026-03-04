@@ -7,69 +7,32 @@
     <link rel="icon" type="image/x-icon" href="https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png">
     
     <style>
-        :root {
-            --bg: #020408;
-            --accent: #4285f4;
-            --border: #1b1f24;
-        }
+        :root { --bg: #05070a; --accent: #4285f4; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; background: var(--bg); overflow: hidden; font-family: sans-serif; }
 
-        body, html {
-            margin: 0; padding: 0; height: 100%; width: 100%;
-            background: var(--bg);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            overflow: hidden;
-            color: white;
-        }
-
-        /* Entry UI Panel */
+        /* Search UI */
         #portal-ui {
-            position: fixed; inset: 0;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            z-index: 1000;
-            background: radial-gradient(circle at center, #0d1117 0%, #020408 100%);
-            transition: transform 0.6s cubic-bezier(0.85, 0, 0.15, 1);
+            position: fixed; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 1000;
+            background: radial-gradient(circle, #0d1117 0%, #05070a 100%);
+            transition: 0.6s cubic-bezier(0.85, 0, 0.15, 1);
         }
 
         .container { text-align: center; width: 90%; max-width: 500px; }
-
-        h1 {
-            font-size: 3.5rem; letter-spacing: 15px; font-weight: 100;
-            margin: 0; text-shadow: 0 0 15px rgba(66, 133, 244, 0.4);
-        }
-
-        .sub-text {
-            font-size: 10px; color: #30363d; letter-spacing: 5px;
-            margin-bottom: 40px; text-transform: uppercase;
-        }
-
+        h1 { font-size: 3rem; letter-spacing: 12px; color: white; font-weight: 100; margin: 0; }
         input {
-            width: 100%; padding: 20px; border-radius: 15px;
-            border: 1px solid var(--border); background: #000;
-            color: var(--accent); font-size: 18px; outline: none;
-            text-align: center; font-family: 'Consolas', monospace;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: 0.3s;
+            width: 100%; padding: 18px; border-radius: 12px; border: 1px solid #30363d;
+            background: #000; color: var(--accent); font-size: 16px; outline: none;
+            text-align: center; margin-top: 30px; font-family: monospace;
         }
 
-        input:focus { border-color: var(--accent); box-shadow: 0 0 20px rgba(66,133,244,0.1); }
-
-        /* The Browser Iframe */
+        /* The Frame Window */
         #browser-frame {
-            position: absolute; top: 0; left: 0;
-            width: 100vw; height: 100vh; border: none;
-            display: none; z-index: 1;
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            border: none; display: none; z-index: 1;
         }
 
-        .ui-hidden { transform: translateY(-100%); pointer-events: none; }
-
-        /* Loading Spinner */
-        #loader {
-            display: none; margin-top: 20px; border: 3px solid #111;
-            border-top: 3px solid var(--accent); border-radius: 50%;
-            width: 20px; height: 20px; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .ui-hidden { transform: translateY(-100%); opacity: 0; }
     </style>
 </head>
 <body>
@@ -77,16 +40,15 @@
     <div id="portal-ui">
         <div class="container">
             <h1>GALAXIA</h1>
-            <div class="sub-text">History-Lock Enabled</div>
-            <input type="text" id="urlInput" placeholder="ENTER DIRECT LINK" autofocus autocomplete="off">
-            <center><div id="loader"></div></center>
+            <input type="text" id="urlInput" placeholder="ENTER LINK (e.g. youtube.com)" autofocus>
         </div>
     </div>
 
     <iframe 
         id="browser-frame" 
         name="galaxia_window"
-        allow="fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; microphone; camera; midi; pointer-lock" 
+        sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts allow-same-origin"
+        allow="fullscreen; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; microphone; pointer-lock" 
         allowfullscreen>
     </iframe>
 
@@ -95,9 +57,8 @@
         const input = document.getElementById('urlInput');
         const ui = document.getElementById('portal-ui');
         const frame = document.getElementById('browser-frame');
-        const loader = document.getElementById('loader');
 
-        // NEW TAB HIJACKER: Forces sites to stay inside your frame
+        // HIJACKER: Prevents popups from opening new tabs
         window.open = function(url) {
             const proxiedUrl = PROXY_BASE + encodeURIComponent(url);
             frame.contentWindow.location.replace(proxiedUrl);
@@ -107,50 +68,43 @@
         input.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 let target = input.value.trim();
-                
-                if (target.includes('.') && !target.includes(' ')) {
+                if (target.includes('.')) {
                     if (!target.startsWith('http')) target = 'https://' + target;
                     
                     const finalUrl = PROXY_BASE + encodeURIComponent(target);
-
-                    // Show loader and frame
-                    loader.style.display = "block";
                     frame.style.display = "block";
                     
-                    // GHOST REDIRECT: Wipes history trail
+                    // GHOST LOAD: Overwrites history so you can't click 'Back' to find the site
                     frame.contentWindow.location.replace(finalUrl);
-                    
-                    // Slide UI out after a short delay
-                    setTimeout(() => {
-                        ui.classList.add('ui-hidden');
-                        loader.style.display = "none";
-                        frame.focus();
-                    }, 800);
-                } else {
-                    input.placeholder = "INVALID: USE FULL LINK";
-                    input.value = "";
-                    setTimeout(() => { input.placeholder = "ENTER DIRECT LINK"; }, 1500);
+                    ui.classList.add('ui-hidden');
                 }
             }
         });
 
-        // THE PANIC KEY (ESC)
+        // PANIC KEY (ESC)
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 ui.classList.remove('ui-hidden');
                 frame.style.display = "none";
-                frame.src = "about:blank"; // Kills audio and session
+                frame.src = "about:blank"; // Kills noise/session instantly
                 input.focus();
-                input.value = "";
             }
         });
 
-        // Ensure WASD/Mouse stays locked for games
-        frame.onload = () => {
-            if (ui.classList.contains('ui-hidden')) {
-                frame.focus();
+        // RE-TUNNELING ENGINE:
+        // Every 500ms, check if the frame tried to "escape" to a non-proxied URL
+        setInterval(() => {
+            try {
+                const currentUrl = frame.contentWindow.location.href;
+                if (currentUrl !== "about:blank" && !currentUrl.startsWith(PROXY_BASE)) {
+                    // Site tried to jump out (likely a Cookie button or Login redirect)
+                    // We grab it and shove it back into the proxy
+                    frame.contentWindow.location.replace(PROXY_BASE + encodeURIComponent(currentUrl));
+                }
+            } catch (e) {
+                // Cross-origin blocks actually help us keep the site trapped
             }
-        };
+        }, 500);
     </script>
 </body>
 </html>
