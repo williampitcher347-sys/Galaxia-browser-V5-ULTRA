@@ -2,107 +2,118 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Drive - My Files</title> <style>
+    <title>GALAXIA // ARCHITECT-OS</title>
+    <style>
         :root {
-            --primary: #6366f1;
-            --bg: #0f172a;
-            --glass: rgba(30, 41, 59, 0.7);
+            --neon: #00f2ff;
+            --dark: #050505;
+            --grid: rgba(0, 242, 255, 0.05);
         }
 
-        body, html {
-            margin: 0; padding: 0; height: 100%; width: 100%;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: white; overflow: hidden;
+        body, html { 
+            margin: 0; padding: 0; height: 100vh; width: 100vw;
+            background-color: var(--dark);
+            color: var(--neon);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            background-image: linear-gradient(var(--grid) 1px, transparent 1px), 
+                              linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+            background-size: 30px 30px; /* Blueprint Grid Effect */
         }
 
-        /* The Glass Search Bar */
-        #navbar {
-            position: fixed; top: 20px; left: 50%;
-            transform: translateX(-50%);
-            width: 80%; max-width: 600px;
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            padding: 10px 20px;
-            border-radius: 50px;
-            border: 1px solid rgba(255,255,255,0.1);
-            display: flex; gap: 10px; z-index: 1000;
-            transition: 0.3s;
+        /* Architect Header */
+        #header {
+            height: 60px; border-bottom: 1px solid var(--neon);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
         }
 
-        #navbar:hover { border-color: var(--primary); }
+        .status-dot { height: 10px; width: 10px; background: var(--neon); border-radius: 50%; display: inline-block; margin-right: 10px; box-shadow: 0 0 10px var(--neon); }
+
+        /* Main Console Layout */
+        #main-ui {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: calc(100vh - 60px); text-align: center;
+        }
+
+        .input-structure {
+            border: 2px solid var(--neon);
+            padding: 5px; position: relative;
+            background: rgba(0, 242, 255, 0.02);
+        }
+
+        /* Decorative "Corner" Brackets */
+        .input-structure::before, .input-structure::after {
+            content: ''; position: absolute; width: 20px; height: 20px;
+            border: 2px solid var(--neon);
+        }
+        .input-structure::before { top: -10px; left: -10px; border-right: 0; border-bottom: 0; }
+        .input-structure::after { bottom: -10px; right: -10px; border-left: 0; border-top: 0; }
 
         input {
-            flex: 1; background: transparent; border: none;
-            color: white; outline: none; font-size: 16px;
+            background: transparent; border: 1px solid rgba(0, 242, 255, 0.3);
+            color: var(--neon); padding: 15px; width: 500px; font-size: 1.2rem;
+            outline: none; text-transform: uppercase; letter-spacing: 2px;
         }
 
         button {
-            background: var(--primary); border: none; color: white;
-            padding: 8px 20px; border-radius: 25px; cursor: pointer;
-            font-weight: bold; transition: 0.2s;
+            margin-top: 30px; background: var(--neon); color: var(--dark);
+            border: none; padding: 15px 40px; font-weight: bold; cursor: pointer;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); /* Angular Architect Shape */
+            transition: 0.3s;
         }
 
-        button:hover { transform: scale(1.05); filter: brightness(1.2); }
+        button:hover { letter-spacing: 5px; transform: scale(1.1); }
 
-        /* Full Screen Frame */
-        #frame-container {
-            width: 100vw; height: 100vh;
-            background: #000;
+        /* Full Screen Content Frame */
+        #viewport {
+            display: none; width: 100vw; height: 100vh; border: none;
+            position: fixed; top: 0; left: 0; z-index: 100;
         }
 
-        iframe {
-            width: 100%; height: 100%; border: none;
-            display: block;
-        }
-
-        /* "Panic" Mode Overlay */
-        #panic-screen {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: white;
-            z-index: 9999;
+        #return-btn {
+            position: fixed; bottom: 20px; right: 20px; z-index: 200;
+            background: rgba(0,0,0,0.8); border: 1px solid var(--neon); color: var(--neon);
+            padding: 5px 10px; display: none; cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <div id="panic-screen">
-        <iframe src="https://www.google.com/search?q=educational+resources" style="width:100%; height:100%; border:none;"></iframe>
+<div id="header">
+    <div><span class="status-dot"></span>SYSTEM: GALAXIA_V13</div>
+    <div>NODE: MAESTEG_HUB // REQUESTS: 2K+</div>
+</div>
+
+<div id="main-ui">
+    <div style="margin-bottom: 50px;">
+        <h2 style="margin:0; font-size: 0.8rem; opacity: 0.6;">PROJECT: DIGITAL_BYPASS</h2>
+        <h1 style="margin:0; font-size: 3rem; letter-spacing: 10px;">MONOLITH</h1>
     </div>
 
-    <div id="navbar">
-        <input type="text" id="url-input" placeholder="Enter URL (e.g. quackprep.com) or search...">
-        <button onclick="launch()">Launch</button>
+    <div class="input-structure">
+        <input type="text" id="url" placeholder="TARGET_ADDR_INPUT...">
     </div>
+    
+    <button onclick="deploy()">INITIATE_DEPLOYMENT</button>
+</div>
 
-    <div id="frame-container">
-        <iframe id="galaxia-engine" src="about:blank" allow="fullscreen; gamepad; autoplay; pointer-lock"></iframe>
-    </div>
+<iframe id="viewport" allow="fullscreen; gamepad; pointer-lock"></iframe>
+<button id="return-btn" onclick="location.reload()">TERMINATE_SESSION</button>
 
-    <script>
-        const proxyBase = "https://galaxia.williampitcher347.workers.dev/?url=";
+<script>
+    function deploy() {
+        let val = document.getElementById('url').value;
+        if(!val) return;
+        if(!val.startsWith('http')) val = 'https://' + val;
 
-        function launch() {
-            let val = document.getElementById('url-input').value;
-            if (!val) return;
-            if (!val.startsWith('http')) val = 'https://' + val;
-            
-            document.getElementById('galaxia-engine').src = proxyBase + encodeURIComponent(val);
-            document.getElementById('navbar').style.top = "-100px"; // Hide bar after launch
-        }
+        const proxy = "https://galaxia.williampitcher347.workers.dev/?url=" + encodeURIComponent(val);
+        
+        document.getElementById('viewport').src = proxy;
+        document.getElementById('viewport').style.display = 'block';
+        document.getElementById('return-btn').style.display = 'block';
+    }
+</script>
 
-        // Re-show search bar when mouse hits the top
-        document.addEventListener('mousemove', (e) => {
-            if (e.clientY < 50) document.getElementById('navbar').style.top = "20px";
-        });
-
-        // PANIC KEY: Pressing the Tilde (~) key hides everything
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '`') {
-                document.getElementById('panic-screen').style.display = 'block';
-            }
-        });
-    </script>
 </body>
 </html>
