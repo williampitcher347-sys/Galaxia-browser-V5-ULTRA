@@ -9,39 +9,39 @@
         
         .interface { 
             position: relative; z-index: 10; text-align: center; 
-            background: rgba(10, 10, 10, 0.95); padding: 50px; 
-            border: 1px solid #222; border-radius: 12px; 
+            background: rgba(10, 10, 10, 0.95); padding: 40px; 
+            border: 1px solid #222; border-radius: 8px; 
             box-shadow: 0 0 60px rgba(0,0,0,1); backdrop-filter: blur(10px);
-            width: 90%; max-width: 700px;
+            width: 90%; max-width: 750px;
         }
 
-        h1 { font-size: 3.5em; letter-spacing: 12px; color: #eee; margin: 0; font-weight: 200; }
-        .sub { font-size: 0.7em; color: #444; letter-spacing: 3px; margin-bottom: 40px; text-transform: uppercase; }
+        h1 { font-size: 3em; letter-spacing: 10px; color: #eee; margin: 0; font-weight: 200; }
+        .sub { font-size: 0.6em; color: #444; letter-spacing: 3px; margin-bottom: 30px; text-transform: uppercase; }
 
         .input-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
         input { 
-            background: #111; border: 1px solid #333; padding: 15px 20px; 
-            width: 300px; border-radius: 4px; color: #fff; outline: none; transition: 0.4s;
-            font-family: 'Courier New', monospace;
+            background: #111; border: 1px solid #333; padding: 15px; 
+            width: 300px; border-radius: 4px; color: #fff; outline: none; 
         }
-        input:focus { border-color: #666; }
-
         button { 
-            background: #222; color: #fff; border: 1px solid #444; padding: 15px 30px; 
-            border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s;
-            letter-spacing: 2px;
+            background: #d1d1d1; color: #000; border: none; padding: 15px 30px; 
+            border-radius: 4px; font-weight: bold; cursor: pointer; 
         }
-        button:hover { background: #eee; color: #000; border-color: #eee; }
 
-        /* BANNER AREA */
-        #container-8065ba5f7df2d0f53a2bb888f1df4b3a {
+        /* VISIBLE AD SLOT */
+        .ad-box {
             margin-top: 30px;
-            min-height: 90px;
-            border-top: 1px solid #1a1a1a;
-            padding-top: 20px;
-            overflow: hidden;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed #333;
+            border-radius: 4px;
+            min-height: 120px; /* Forces it to be visible */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .ad-label { font-size: 8px; color: #222; margin-bottom: 8px; letter-spacing: 2px; }
+        .ad-tag { font-size: 9px; color: #555; margin-bottom: 10px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -49,16 +49,18 @@
 
     <div class="interface">
         <h1>GALAXIA</h1>
-        <div class="sub">V5 ULTRA // SECURE NODE // V15 ENGINE</div>
+        <div class="sub">V5 ULTRA // BYPASS PROTOCOL</div>
         
         <div class="input-group">
-            <input type="text" id="urlIn" placeholder="ENTER COORDINATES...">
+            <input type="text" id="urlIn" placeholder="ENTER URL...">
             <button onclick="launch()">INITIATE</button>
         </div>
 
-        <div class="ad-label">SYSTEM SPONSOR</div>
-        <div id="container-8065ba5f7df2d0f53a2bb888f1df4b3a"></div>
-        <script async="async" data-cfasync="false" src="https://pl28845318.effectivegatecpm.com/8065ba5f7df2d0f53a2bb888f1df4b3a/invoke.js"></script>
+        <div class="ad-box">
+            <div class="ad-tag">SYNDICATE SPONSOR NODE</div>
+            <div id="container-8065ba5f7df2d0f53a2bb888f1df4b3a" style="width:100%;"></div>
+            <script async="async" data-cfasync="false" src="https://pl28845318.effectivegatecpm.com/8065ba5f7df2d0f53a2bb888f1df4b3a/invoke.js"></script>
+        </div>
     </div>
 
     <script>
@@ -70,17 +72,13 @@
             window.location.href = `${worker}?url=${encodeURIComponent(target)}`;
         }
 
-        // Cinematic Mesh Background
+        // Background Animation
         const c = document.getElementById('mesh'), $ = c.getContext('2d');
         let w, h, pts = [];
-        const init = () => { w = c.width = window.innerWidth; h = c.height = window.innerHeight; pts = []; for(let i=0; i<60; i++) pts.push({x:Math.random()*w, y:Math.random()*h, vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.3}); };
+        const init = () => { w = c.width = window.innerWidth; h = c.height = window.innerHeight; pts = []; for(let i=0; i<50; i++) pts.push({x:Math.random()*w, y:Math.random()*h, vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.3}); };
         const draw = () => {
             $.clearRect(0,0,w,h); $.fillStyle = '#444';
-            pts.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                if(p.x<0 || p.x>w) p.vx*=-1; if(p.y<0 || p.y>h) p.vy*=-1;
-                $.beginPath(); $.arc(p.x, p.y, 1, 0, Math.PI*2); $.fill();
-            });
+            pts.forEach(p => { p.x += p.vx; p.y += p.vy; if(p.x<0 || p.x>w) p.vx*=-1; if(p.y<0 || p.y>h) p.vy*=-1; $.beginPath(); $.arc(p.x, p.y, 1, 0, Math.PI*2); $.fill(); });
             requestAnimationFrame(draw);
         };
         window.addEventListener('resize', init); init(); draw();
