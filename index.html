@@ -5,60 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GALAXIA V5 | ULTRA</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; background: #050505; color: #d1d1d1; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        body, html { margin: 0; padding: 0; height: 100%; background: #050505; color: #d1d1d1; font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
         
-        /* The Mesh Background */
+        /* Cinematic Background */
         canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
 
-        /* Main Interface - Hidden when proxy is active */
-        #main-ui { 
-            display: flex; flex-direction: column; align-items: center; 
-            padding-top: 15vh; min-height: 140vh; 
-        }
+        /* Interface Wrapper */
+        #main-ui { display: flex; flex-direction: column; align-items: center; padding-top: 15vh; min-height: 160vh; }
 
         .interface { 
-            z-index: 10; text-align: center; background: rgba(15, 15, 15, 0.95); 
-            padding: 50px; border: 1px solid #222; border-radius: 4px; 
-            width: 90%; max-width: 650px; box-shadow: 0 0 50px rgba(0,0,0,1);
+            z-index: 10; text-align: center; background: rgba(10, 10, 10, 0.98); 
+            padding: 50px; border: 1px solid #1a1a1a; border-radius: 2px; 
+            width: 90%; max-width: 600px; box-shadow: 0 0 100px #000;
         }
 
-        h1 { font-size: 3em; letter-spacing: 15px; margin: 0; font-weight: 200; color: #fff; }
-        .sub { font-size: 0.6em; color: #444; letter-spacing: 4px; margin-bottom: 40px; }
+        h1 { font-size: 3.5em; letter-spacing: 20px; color: #fff; margin: 0; font-weight: 100; }
+        .sub { font-size: 0.6em; color: #333; letter-spacing: 5px; margin-bottom: 50px; text-transform: uppercase; }
 
-        input { background: #111; border: 1px solid #333; padding: 15px; width: 80%; color: #fff; text-align: center; margin-bottom: 20px; outline: none; }
-        button { background: transparent; color: #fff; border: 1px solid #555; padding: 12px 40px; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #fff; color: #000; border-color: #fff; }
+        input { background: #000; border: 1px solid #222; padding: 15px; width: 85%; color: #fff; text-align: center; margin-bottom: 25px; outline: none; font-family: monospace; }
+        button { background: transparent; color: #fff; border: 1px solid #fff; padding: 12px 50px; cursor: pointer; transition: 0.4s; letter-spacing: 2px; }
+        button:hover { background: #fff; color: #000; }
 
-        /* The Stealth iFrame - Hidden until needed */
-        #proxy-frame {
-            display: none; position: fixed; top: 0; left: 0; 
-            width: 100%; height: 100%; border: none; z-index: 9999;
-            background: white;
-        }
+        /* THE HISTORY CLOAKER FRAME */
+        #proxy-frame { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 9999; background: #fff; }
 
-        /* Ad Zone */
-        .ad-zone { margin-top: 200px; padding: 20px; border-top: 1px solid #1a1a1a; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        /* AD ZONE (Scroll down to see) */
+        .ad-zone { margin-top: 300px; padding: 40px; border-top: 1px solid #111; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .ad-label { font-size: 9px; color: #222; margin-bottom: 20px; letter-spacing: 3px; }
     </style>
 </head>
 <body>
     <canvas id="mesh"></canvas>
-    
     <iframe id="proxy-frame"></iframe>
 
     <div id="main-ui">
         <div class="interface">
             <h1>GALAXIA</h1>
-            <div class="sub">V5 ULTRA // HISTORY CLOAK: ACTIVE</div>
-            
-            <input type="text" id="urlInput" placeholder="ENTER SITE URL...">
+            <div class="sub">V5 ULTRA // CLOAK: ENABLED // NODE: MAESTEG</div>
+            <input type="text" id="urlInput" placeholder="ENTER TARGET URL...">
             <br>
-            <button onclick="launch()">INITIATE</button>
+            <button onclick="launch()">LAUNCH SITE</button>
         </div>
 
         <div class="ad-zone">
+            <div class="ad-label">ENCRYPTION SPONSOR</div>
             <div id="container-8065ba5f7df2d0f53a2bb888f1df4b3a"></div>
             <script async="async" data-cfasync="false" src="https://pl28845318.effectivegatecpm.com/8065ba5f7df2d0f53a2bb888f1df4b3a/invoke.js"></script>
-        </div>
+            </div>
     </div>
 
     <script>
@@ -69,10 +62,6 @@
 
             const workerUrl = `https://galaxia.williampitcher347.workers.dev?url=${encodeURIComponent(target)}`;
             
-            // THE STEALTH MOVE: 
-            // 1. Show the frame
-            // 2. Hide the UI
-            // 3. Load the site inside the frame
             const frame = document.getElementById('proxy-frame');
             const ui = document.getElementById('main-ui');
             
@@ -80,15 +69,15 @@
             frame.style.display = 'block';
             frame.src = workerUrl;
 
-            // This replaces the state so "Back" button doesn't reveal the proxy URL easily
+            // This ensures the back button doesn't easily leak the proxy URL
             window.history.pushState(null, null, window.location.href);
         }
 
-        // Background Mesh Logic
+        // Cinematic Mesh Animation
         const c = document.getElementById('mesh'), $ = c.getContext('2d');
         let w, h, pts = [];
-        const init = () => { w = c.width = window.innerWidth; h = c.height = window.innerHeight; pts = []; for(let i=0; i<60; i++) pts.push({x:Math.random()*w, y:Math.random()*h, vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5}); };
-        const draw = () => { $.clearRect(0,0,w,h); $.fillStyle = '#444'; pts.forEach(p => { p.x += p.vx; p.y += p.vy; if(p.x<0 || p.x>w) p.vx*=-1; if(p.y<0 || p.y>h) p.vy*=-1; $.beginPath(); $.arc(p.x, p.y, 1, 0, Math.PI*2); $.fill(); }); requestAnimationFrame(draw); };
+        const init = () => { w = c.width = window.innerWidth; h = c.height = window.innerHeight; pts = []; for(let i=0; i<60; i++) pts.push({x:Math.random()*w, y:Math.random()*h, vx:(Math.random()-0.5)*0.3, vy:(Math.random()-0.5)*0.3}); };
+        const draw = () => { $.clearRect(0,0,w,h); $.fillStyle = '#333'; pts.forEach(p => { p.x += p.vx; p.y += p.vy; if(p.x<0 || p.x>w) p.vx*=-1; if(p.y<0 || p.y>h) p.vy*=-1; $.beginPath(); $.arc(p.x, p.y, 1, 0, Math.PI*2); $.fill(); }); requestAnimationFrame(draw); };
         window.addEventListener('resize', init); init(); draw();
     </script>
 </body>
